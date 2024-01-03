@@ -1,0 +1,112 @@
+{% load static %}
+{% load bootstrap5 %}
+{% load bootstrap_icons %}
+{% include './base/navbar.html' %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+          <div class="row d-flex ">
+            <!--list of friends-->
+            <div class="col-4">
+                <div class="card shadow-sm" >
+                  <div class="card-header d-flex justify-content-center align-items-center p-3">
+                    <div class="mb-0 fs-6 fs-italic">Friend network </div>
+                  </div>
+                  <div class="card-body">
+                  <div class="card-text">
+                    {%for profile_friend in friends_profiles %}
+                            {% for profile_data in profile_friend%}
+                    <table class="table table-hover " data-bs-spy="scroll" >
+                        <tbody>
+                            <a href={% url 'chat' id=profile_data.user.id username=profile_data.user.username %}  class="text-decoration-none"> 
+                            <div
+                              class="
+                                d-flex
+                                align-items-center
+                                dropdown-item
+                                p-0
+                                m-0
+                              "
+                            >
+                              <div class="p-2">
+                                <img  src="{{profile_data.profile_photo.url}}"  alt="logged-in user friend profile picture" class="rounded-circle"
+                                style=" width: 38px; height: 38px; object-fit: cover;"/>
+                              </div>
+                              <div>
+                                <p class="m-0">{{profile_data.user.username}} </p>
+                              </div>
+                            </div>
+                            </a>
+                            {% endfor%}
+                            {%empty%}
+                            <div class="p-2">
+                            <p>
+                              Friend list empty. <br>
+                              Search & add friends.
+                            </p>
+                            </div>
+                            {% endfor%}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--Chat container -->
+            <div class="col-8 ">
+              <div class="card shadow" >
+                <div class="card-header p-3">
+                <span class="ml-2">{{user.username}}</span>
+                </div>
+                <div class="card-body overflow-auto" data-bs-spy="scroll" style="position: relative; height: 400px" id='message'>
+                    {% for message in messages %}
+                    {% if message.sent_to == user.username %}
+                  <div class="d-flex flex-row justify-content-end mb-4 pt-1">
+                    <div>
+                    <p class="small p-2 me-3 mb-1 text-white rounded-3" style="background-color:#507E9F">{{message.chat_message}}</p>
+                      <p class="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">{{message.sent_date}}</p>
+                    </div>
+                  </div>
+                  {% else %}
+                  <div class="d-flex flex-row justify-content-start">
+                    <div>
+                      <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">{{message.chat_message}}</p>
+                      <p class="small ms-3 mb-3 rounded-3 text-muted">{{message.sent_date}}</p>
+                    </div>                  
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+                </div>
+                <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+                    <img  src="{{profile.profile_photo.url}}"  alt="logged-in user profile picture" class="rounded-circle"
+                          style=" width: 38px; height: 38px; object-fit: cover;"/>
+                  <input type="text" class="form-control form-control-lg ms-2" id="input"
+                    placeholder="Type message">
+                  <a class="ms-3" ><div type="button" id="message-submit"><i class="fas fa-paper-plane" style="color: #507E9F;"></i></div></a>
+                </div>
+              </div>
+            </div>
+          </div>
+    </section>
+</div>
+
+
+{{user.id|json_script:"user-id"}}
+{{user.username|json_script:"username-friend"}}
+{{request.user.username|json_script:"user-username"}}
+{% include './base/footer.html' %}
+
+{% endblock %}
+{% block javascript %}
+<script src="{% static 'js/chat.js' %}"></script>
+{% endblock %} 

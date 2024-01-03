@@ -1,0 +1,82 @@
+{% load static %}
+{% load bootstrap5 %}
+{% include './base/navbar.html' %}
+{% load crispy_forms_tags %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% block body %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- font-awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- material icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Option 1: Include in HTML -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"> 
+</head>
+
+<body>
+    <div class="container m-auto " style="max-width: 900px !important;">
+        <div class="m-5">
+            <!-- header -->
+            <h1 class="leading-none text-gray-900 tracking-tight mt-3" 
+            style="font-family: sans-serif; margin-block-start: 0.67em;
+            margin-block-end: 0.67em;margin-inline-start: 0px;
+            margin-inline-end: 0px;display: block;
+            line-height: 1;font-size: 1.5rem;letter-spacing: -0.025em; ">
+            Account Setting for <b>{{user.username}}</b> </h1>
+            <hr>
+            <div>
+            <!-- Settings section-->
+            <div class=" mt-5 ">
+                <div class="bg-white rounded shadow-lg ">
+                <form action="" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="grid gap-3 p-4" 
+                    style="
+                    display: grid;
+                    line-height: inherit;
+                    color: #666;
+                    font-size: 15px;
+                    ">
+                    <div class="row">
+                        <div class="col">
+                            <p >First name</p>
+                            <textarea id="first_name" name="first_name" rows="1"  class="shadow-none bg-gray-100">{{profile.first_name}}</textarea>    
+                        </div>
+                        <div class="col">
+                            <p>Last name</p>
+                            <textarea id="last_name" name="last_name" rows="1"  class="shadow-none bg-gray-100 ">{{profile.last_name}}</textarea>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p>Status</p>
+                        <textarea id="about" name="profile_status" rows="4" class="shadow-none bg-gray-100 mx-2" style="width: 700px;">{{profile.profile_status}}</textarea>    
+
+                    </div>
+                        <div class="row">
+                            <div class="col">
+                                <p> Profile Image</p>
+                                <img width="250" height="250" src="{{profile.profile_photo.url}}" alt='user profile photo'/>
+                                <br>
+                                <input type="file" name="profile_photo" value=" " class="shadow-none bg-gray-100 mt-2">     
+                            </div>
+                        </div>
+                        <!-- save and cancel buttons -->
+                        <div class="d-flex flex-row-reverse">
+                                <button class="btn btn-outline-secondary" style="width: 100px;"> <a href="/" class="text-decoration-none text-black" style="width: 100px;">Cancel</a> </button>
+                                <button type="submit" class="mx-2 btn btn-outline-success" style="width: 100px;"> Save </button>
+                        </div>
+                </form>
+            </div>
+
+        </div>
+    </div>    
+</body>
+{% endblock %}

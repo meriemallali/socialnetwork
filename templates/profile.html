@@ -1,0 +1,188 @@
+{% load static %}
+{% load bootstrap5 %}
+{% include './base/navbar.html' %}
+{% load crispy_forms_tags %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<head>
+	<title>Profile - {{profiledata.user.username}}</title>
+	<link rel="stylesheet" href="{% static './css/navstyle.css' %}">
+	<!-- font-awesome-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<!-- material icons -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!-- Option 1: Include in HTML -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"> 
+
+</head>
+{% block body %}
+<!-- top header -->
+<div class="h-25 d-inline-block w-100" style=" background-color:  #507E9F;"> 
+	<div class="pt-4 rounded-top text-white d-flex flex-row ">
+		<!-- section : profile owner picture, username, full name -->
+		<div class="ms-4 d-flex flex-column">
+				<img src="{{profiledata.profile_photo.url}}"
+					alt="user profile picture" class="img-fluid object-fit-cover img-thumbnail rounded-circle me-2 mt-4 mb-2"
+					style="width: 180px; height: 180px; z-index: 1">
+					<!-- switch between buttons logic -->
+					<!--if profile owner is the current logged in user => show edit button-->
+					<!--if not, we check if the profile owner is in the friend list of the current logged in user-->
+					<!--if profile owner is in the friend list => show unfriend button, if not => show add friend button -->
+				<div class="justify-content-center d-flex ">
+					{% if profiledata.user.username == user.username %}
+					<button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark" onclick="window.location.href='/settings'"
+					style="z-index: 1;">
+					Edit profile
+					</button>
+					{% elif profiledata.user.username in friends_list %}
+					<form method="post" action="{% url 'unfriend'  %}">
+						{% csrf_token %}
+						<input type="hidden" value="{{user.id}}" name="userid" />
+						<input type="hidden" value="{{user.username}}" name="username" />
+						<input type="hidden" value="{{profiledata.user.id}}" name="user_friend_id" />
+						<input type="hidden" value="{{profiledata.user.username}}" name="friend_username" />
+						<button type="submit" class="btn btn-outline-dark" data-mdb-ripple-color="dark"> Remove from network</button>
+					</form>
+					{% else %}
+					<form action="{% url 'addfriend' %}" method="POST"> 
+						{% csrf_token %}
+					<input type="hidden" value="{{user.id}}" name="userid" />
+					<input type="hidden" value="{{user.username}}" name="username" />
+					<input type="hidden" value="{{profiledata.user.id}}" name="user_friend_id" />
+					<input type="hidden" value="{{profiledata.user.username}}" name="friend_username" />
+					<button type="submit"class="btn btn-outline-dark" data-mdb-ripple-color="dark">Add to network</button>
+					</form>
+					{% endif %}
+		</div>
+	</div>
+			<div class="ms-2 mt-5" style=" z-index: 1;">
+				<h4>@{{profiledata.user.username}}</h4>
+				<h5 class="lead-my text-capitalize"> {{profiledata.first_name}} {{profiledata.last_name}} </h5>
+			</div>
+		</div>
+	</div>
+    <!--right side of the header -->
+	<div class="p-5 text-black" style="background-color: #c3d4de;">
+		<div class="d-flex justify-content-end text-center py-1">
+			<!-- user owner data, number of posts and friends. -->
+			<div>
+			{% if posts_length == 0 or  posts_length == 1 %}
+					<p class="mb-1 h3">{{posts_length}}</p>
+					<p class="small text-muted mb-0 h2">Post</p>
+					{% else %}
+					<p class="mb-1 h3">{{posts_length}}</p>
+					<p class="small text-muted mb-0 h2">Posts</p>
+					{% endif %} 
+			</div>
+			<div class="px-3">
+				{% if friends_count == 0 or friends_count == 1  %}
+					<p class="mb-1 h3">{{friends_count}} </p>
+					<p class="small text-muted mb-0 h2">Friend</p>
+					{% else %}
+					<p class="mb-1 h3">{{friends_count}} </p>
+					<p class="small text-muted mb-0 h2">Friends</p>
+					{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+<!-- profile body -->
+<div class="p-3" >
+	<!-- profile owner status -->
+	<div class="d-xl-flex d-sm-flex justify-content-center ">
+		<div class="col-6">
+			<div class="card p-3 text-black shadow rounded">
+				<div class="card-body">
+					<h5 class="card-title text-muted fs-5">Status:</h5>
+					{% if profiledata.profile_status %}
+					<p class="card-text fs-4 lh-base text-center" style="font-family:'Lucida Handwriting';">{{profiledata.profile_status}}</p>
+					{% else %}
+					<p class="card-text lh-base text-center" >No shared status by <strong> {{profiledata.user.username}} </strong>  . </p>
+					{% endif%}
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- profile owner posts if there are any -->
+	<!-- if not, display : No shared posts by : profile owner username. -->
+	<div class="d-xl-flex d-sm-flex justify-content-center pt-3 mt-3">
+		<div class="col-6 justify-content-center">
+			<div class="card p-3 text-black shadow rounded">
+				<div class="card-body">
+					<h5 class="card-title text-muted fs-5">Posts:</h5>
+				</div>
+				{% if posts != Null%}
+				{% for post, post_data in posts_data.items reversed %}
+				<div class="card mb-3" style="max-width: 650px; align-self: center;">
+					<div class="card-body">
+						<div class="d-flex">
+							<img
+							src="{{profiledata.profile_photo.url}}"
+							alt="avatar"
+							class="rounded-circle me-2"
+							style="width: 38px; height: 38px; object-fit: cover"
+							/>
+							<div>
+							<p class="m-0 fw-bold">{{post.username}}</p>
+							</a>
+							<span class="text-muted fs-7">{{post.date_posted}}</span>
+							</div>
+						</div>
+						<p class="m-2 lead-my justify-content-center h-75">{{post.description}}</p>
+							<img src="{{post.media.url}} "
+							alt="user post image" class="img-fluid rounded" style="width: 632px; height: 360px;"  >  
+							<hr class="hr hr-blurry" />
+							<div class="accordion mt-2">
+								<!-- comment collapse -->
+								{% if post.sum_likes == 0 or post.sum_likes == 1%}
+									<p class="m-0"> {{post.sum_likes}} friend liked this post</p>
+								{%else%}
+								<p class="m-0"> {{post.sum_likes}} friends liked this post</p>
+								{%endif%}
+							</div>
+						<hr />
+							<div class="accordion-item border-0">
+							<h2 class="accordion-header" id="panelsStayOpen-headingOne">
+								<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+									<i class="fas fa-comment-alt me-3" style="color: #507E9F;"></i> Comments
+								</button>
+							</h2>
+							<div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show " aria-labelledby="panelsStayOpen-headingOne">
+								<div class="accordion-body">
+									{% for comnt in post_data.comments%}
+									<div class="d-flex align-items-center">
+									<!-- if comments => display  -->
+									<div class="p-0 rounded w-100">                              
+										<p> <a href='{% url 'profile' comnt.comment_owner.id comnt.comment_owner %}' class="fw-bold text-decoration-none " style="color:  #507E9F;">@{{comnt.comment_owner}} :</a>
+										<span class="fs-6 bg-gray rounded"> {{comnt.comment}} </span>
+										</p>
+										<hr />
+									</div>
+									</div>
+									{% empty %}
+									<div class="d-flex align-items-center">
+										<!-- if no comments-->
+										<div class="p-0 rounded w-100">                              
+										<p> <a class="fw-bold text-decoration-none " style="color:  #507E9F;"></a>
+										<span class="fs-6 bg-gray rounded"> No comments yet. </span>
+										</p>
+										<hr />
+										</div>
+									</div>
+									{% endfor%}
+								</div>
+							</div>
+							</div>
+						</div>
+					</div>
+					{% empty %}
+					<p class="m-3">No shared posts by <strong> {{profiledata.user.username}} </strong> .</p>
+					{% endfor %}
+					{% endif%}
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% include './base/footer.html' %}

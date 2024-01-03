@@ -1,0 +1,58 @@
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log In </title>
+</head>
+    <body class="bg-gray">
+        <!-- left side header -->
+        <div class="container ps-0 p-5 d-flex flex-column flex-lg-row justify-content-evenly">
+            <div class="text-center ps-0 mt-lg-5 pt-lg-5 text-lg-start "> 
+                <h1 class="fw-bold fs-0" style="color:#507E9F">Social Network</h1>
+                </div>
+          <!-- login form card -->
+          <div style="max-width: 28rem; width: 100%">
+            <!-- login form -->
+            <div class="bg-white shadow rounded p-3 input-group-lg">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {% for message in messages %}
+                    <p class="fw-bold"><span class="fw-normal text-danger">{{message}}</span></p>
+                    {% endfor %}
+              <input  type="text" name="username" placeholder="Username" class="form-control my-3" />
+              <input  name="password" type="password" class="form-control my-3" placeholder="Password" />
+              <button type="submit" class="btn w-100 my-3 text-light fw-bolder" style="background-color: #507E9F;">Log In</button>
+                </form>
+              <p class="text-decoration-none text-center">Don't have an account?</p>
+              <hr />
+              <div class="text-center my-4">
+               <a href='/signup'> <button  class="btn w-100 my-3 text-light fw-bolder" data-bs-toggle="modal" style="background-color: #507E9F;">Create New Account</button> </a>
+              </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Footer -->
+        <footer class="bg-white p-4">
+          <div class="container">
+            <!--first section -->
+            <div class="row d-flex flex-wrap">
+              <div class="col">
+                <p class="mx-2 fs-6 mb-3">Social Network</p>
+              </div>
+              <hr />
+              <div class="col">
+                <p class="mx-2 fs-10 text-muted">&copy; 2023, April</p>
+              </div>
+            </div>
+        </footer>
+      </body>
+</body>
+</html>

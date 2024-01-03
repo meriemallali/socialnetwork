@@ -1,0 +1,82 @@
+{% load static %}
+{% load bootstrap5 %}
+{% include './base/navbar.html' %}
+{% load crispy_forms_tags %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% block body %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/navstyle.css' %}">
+{% endblock %}
+  <head>
+    <!-- font-awesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- material icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- bootstrap-icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+  </head>
+
+  <body>
+    <div class="container m-auto " style="max-width: 900px !important;">
+        <div class="m-5">
+            <!-- header -->
+            <h1 class="leading-none text-gray-900 tracking-tight mt-3" 
+            style="font-family: sans-serif; margin-block-start: 0.67em;
+            margin-block-end: 0.67em;margin-inline-start: 0px;
+            margin-inline-end: 0px;display: block;
+            line-height: 1;font-size: 1.5rem;letter-spacing: -0.025em; ">
+            Rest interface for <b>{{user.username}}</b> </h1>
+            <hr>
+            <div>
+            <!-- Settings section-->
+            <div class=" mt-5 ">
+                <div class="bg-white rounded shadow-lg ">
+                    {% comment %} <ul> {% endcomment %}
+                        <div class="p-2">
+                        <li class="dropdown-item p-1 my-3 rounded" type="button" onClick= "window.location.href='/api/userdata'">
+                            <ul class="navbar-nav">
+                              <li class="nav-item d-flex text-dark">
+                                <i class="fa fa-up-right-from-square bg-gray p-2 rounded-circle"></i>
+                                  <div class="ms-3 d-flex justify-content-between align-items-center w-100">
+                                    <p class="m-0">User data</p>
+                                    <div class="mx-3">
+                                    <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                  </div>
+                              </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-item p-1 my-3 rounded" type="button" onClick= "window.location.href='/api/userprofile'">
+                            <ul class="navbar-nav">
+                              <li class="nav-item d-flex text-dark">
+                                <i class="fa fa-up-right-from-square bg-gray p-2 rounded-circle"></i>
+                                  <div class="ms-3 d-flex justify-content-between align-items-center w-100">
+                                    <p class="m-0">User Profile</p>
+                                    <div class="mx-3">
+                                    <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                  </div>
+                              </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-item p-1 my-3 rounded" type="button" onClick= "window.location.href='/api/userpost'">
+                            <ul class="navbar-nav">
+                              <li class="nav-item d-flex text-dark">
+                                <i class="fa fa-up-right-from-square bg-gray p-2 rounded-circle"></i>
+                                  <div class="ms-3 d-flex justify-content-between align-items-center w-100">
+                                    <p class="m-0">User Posts</p>
+                                    <div class="mx-3">
+                                    <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                  </div>
+                              </li>
+                            </ul>
+                        </li>
+                    </div>
+                    </div>
+            </div>
+        </div>
+    </div> 
+</body>
+{%endblock%}

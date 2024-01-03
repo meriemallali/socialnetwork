@@ -1,0 +1,55 @@
+{% load static %}
+{% load bootstrap5 %}
+{% load crispy_forms_tags %}
+{% bootstrap_css %}
+{% block body %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="favicon.png" rel="icon" type="image/png" />
+    <title>Search</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- font-awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- material icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <!-- bootstrap-icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+  </head>
+
+  <body class="bg-light">
+    <div class="container p-1 bg-light">
+      <a href="javascript:history.back()" class="btn" style="color:#507E9F ;"><h4 class="m-2"><i class="bi bi-chevron-left"></i> Back</h4></a>
+    </div>
+    <div class="container p-2 mt-4 bg-light">
+      <p class="h4">
+        Search results For: <span class="fw-semi-bold"><b>{{ username }}</b></span>
+      </p>
+      <!-- searched profiles list -->
+      <div class="col-sm-6">
+        {% block content %}
+          {% for profile in search_result %}
+            <div class="card shadow-lg rounded" style="max-height: 300px; margin: 20px;">
+              <div class="row g-0">
+                <div class="col-sm-5">
+                  <img src="{{ profile.profile_photo.url }}" style="height: 200px; width: 200px; " class="card-img-top" alt="searched user profile image" />
+                </div>
+                <div class="col">
+                  <div class="card-body">
+                    <h5 class="card-title">@ {{ profile.user }}</h5>
+                    <p class="card-text">Satus: {{ profile.profile_status }}</p>
+                    <a href="profile/{{ profile.user.id }}/{{ profile.user }}" class="btn btn-outline-success stretched-link">View Profile</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- if no result is found return => empty -->
+            {% empty %}
+            <p class="m-2">No results found for {{ username }}.</p>
+          {% endfor %}
+        {% endblock %}
+      </div>
+    </div>
+  </body>
+{% endblock %}

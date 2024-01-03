@@ -1,0 +1,370 @@
+{% load static %}
+{% load bootstrap5 %}
+{% include './base/navbar.html' %}
+{% load crispy_forms_tags %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% block body %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/feed.css' %}">
+{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'favicon.png' %}" rel="icon" type="image/png">
+    <title>Feed</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% comment %} bootstrap-icons {% endcomment %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    {% comment %} font-awesome icons {% endcomment %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    {% comment %} material icons {% endcomment %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    {% comment %} boxicons library {% endcomment %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css">
+    {% comment %} animated font font-awesome {% endcomment %}
+    
+</head>
+
+<body class="bg-gray postion-relative">
+    <!-- main feed container-->
+  <div class="container-fluid">
+        <div class="row justify-content-evenly">
+          <!-- left side list -->
+          <div class="col-12 col-lg-3">
+            <div
+              class="d-none d-xxl-block h-100 fixed-top overflow-hidden scrollbar"
+              style="max-width: 360px; width: 100%; z-index: 4"
+            >
+              <ul
+                class="navbar-nav mt-4 ms-3 d-flex flex-column pb-5 mb-5"
+                style="padding-top: 56px"
+              >
+                <!-- logged-in user profile -->
+                <li class="dropdown-item p-1 rounded">
+                  <a
+                  href='{% url 'profile' user.id user.username %}' id='refresh-link'
+                    class="
+                      d-flex
+                      align-items-center
+                      text-decoration-none text-dark
+                    "
+                  >
+                    <div class="p-2">
+                      <img
+                        src="{{profile.profile_photo.url}}"
+                        alt="avatar"
+                        class="rounded-circle me-2"
+                        style="width: 40px; height: 40px; object-fit: cover"
+                      />
+                    </div>
+                    <div>
+                      <p class="m-0">{{user.username}} </p>
+                    </div>
+                  </a>
+                </li>
+                <li class="p-1" type="button">
+                  <div id="accordionFlushExample">
+                    <div>
+                      <div
+                        class="d-flex align-items-center"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#flush-collapseOne"
+                        aria-expanded="false"
+                        aria-controls="flush-collapseOne"
+                      >
+                        <div class="p-2">
+                          <i
+                            class="fas fa-chevron-down text-success rounded-circle p-2"
+                          ></i>
+                        </div>
+                        <div>
+                          <p class="m-0">Friends list</p>
+                        </div>
+                      </div>
+                      <!-- Friends list content -->
+                      <div
+                        id="flush-collapseOne"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="flush-headingOne"
+                        data-bs-parent="#accordionFlushExample"
+                      >
+                        <div>
+                          <!-- Friend profile -->
+                          {%for profile_friend in friends_profiles %}
+                          {% for profile_data in profile_friend%}
+                          <a href="profile/{{profile_data.user.id}}/{{profile_data.user.username}}" class="text-decoration-none"> 
+                          <div
+                            class="
+                              d-flex
+                              align-items-center
+                              dropdown-item
+                              p-0
+                              m-0
+                            "
+                          >
+                            <div class="p-2">
+                              <img
+                                src="{{profile_data.profile_photo.url}}"
+                                alt="from fb"
+                                class="rounded-circle"
+                                style="
+                                  width: 38px;
+                                  height: 38px;
+                                  object-fit: cover;
+                                "
+                              />
+                            </div>
+                            <div>
+                              <p class="m-0">{{profile_data.user.username}} </p>
+                            </div>
+                          </div>
+                          </a>
+                          {% endfor%}
+                          {%empty%}
+                          <div class="p-2">
+                          <p>
+                            Friend list empty. <br>
+                            Search & add friends.
+                          </p>
+                          </div>
+                          {% endfor%}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <hr class="m-0" />
+            </div>
+          </div>
+          <!-- Add post form -->
+          <div class="col-12 col-lg-6 pb-5">
+            <div class="d-flex flex-column justify-content-center w-100 mx-auto" style="padding-top: 56px; max-width: 680px">
+              <!-- create post -->
+              <div class="bg-white p-3 mt-3 rounded border shadow">
+                <!-- avatar -->
+                <div class="d-flex" type="button">
+                  <div class="p-1">
+                    <img src="{{profile.profile_photo.url}}" alt="avatar" class="rounded-circle me-2"
+                      style="width: 38px; height: 38px; object-fit: cover"/>
+                  </div>
+                  <form action="sharepost" method="POST" enctype="multipart/form-data" >
+                    {% csrf_token %} 
+                  <input type="text"
+                    class="form-control mx-1 border-0 bg-transparent " name="description"
+                    style = "width: 540px; box-shadow: none; height: fit-content;"
+                    placeholder="Create a new post.." /> 
+                </div>
+                <!-- create modal -->
+                <hr />
+                <!-- actions -->
+                <div class="d-flex flex-column flex-lg-row mt-3">
+                  <div class=" dropdown-item rounded d-flex align-items-center justify-content-center "
+                    role="button">
+                      <i class="fas fa-photo-video me-2 text-success"></i>
+                      <label for='photoInput' class="m-0 text-muted cursor-pointer"> Choose photo
+                      <input type="file" name="media" id='photoInput' style="display: none;">
+                    </label>
+                  </div>
+                  <!-- submit post -->
+                  <div class="dropdown-item rounded d-flex align-items-center justify-content-center"
+                  role="button">
+                    <i class="bi bi-send me-2 text-success"></i>
+                    <label class="m-0 text-muted cursor-pointer"> Post 
+                    <button type="submit" name="media" class="invisible">
+                    </label>
+                  
+                  </div>
+                </form> 
+                  
+                </div>
+            </div>
+
+        {% comment %} display each post with its comments.  {% endcomment %}
+        {% for post, post_data in posts_data.items reversed %}
+        {% comment %} check if the post owner is in the friend list or it's the current logged-in user post.  {% endcomment %}
+        {% if post.username in friends_list or user.username == post.username %}
+        <div class="bg-white p-4 rounded shadow mt-3">
+                <div class="d-flex justify-content-between">
+                  <!-- post header => post owner username and profile link -->                
+                  <div class="d-flex">
+                    <a href="profile/{{post_data.profile.user.id}}/{{post_data.profile.user.username}}" class="text-decoration-none"> 
+                      <!-- post owner profile image-->
+                    <img
+                      src="{{post_data.profile.profile_photo.url}}"
+                      alt="post owner profile image"
+                      class="rounded-circle me-2"
+                      style="width: 38px; height: 38px; object-fit: cover"
+                    />
+                      <div>
+                      <p class="m-0 fw-bold">{{post.username}}</p>
+                    </a>
+                    <span class="text-muted fs-7">{{post.date_posted}}</span>
+                    </div>
+                    
+                  </div>
+                  
+                </div>
+                <!-- post content -->
+                <div class="mt-3">
+                  <!-- content -->
+                  <div>
+                    <p>
+                      {{post.description}}
+                    </p>
+                     {% if post.media%}
+                      <img
+                      src="{{post.media.url}}"
+                      alt="post image"
+                      class="img-fluid rounded"
+                      style="width: 632px; height: 360px;"
+                    />
+                    {% endif %}
+                  </div>
+                  <!-- likes & comments -->
+                  <div class="post__comment mt-3 position-relative">
+                    <!-- likes -->
+                    <div
+                      class="
+                        d-flex
+                        align-items-center
+                        top-0
+                        start-0
+                        position-absolute
+                      "
+                      style="height: 50px; z-index: 5"
+                    >                    
+                    </div>
+                    <!-- comments start-->
+                    <div class="accordion" id="accordionExample">
+                      <div class="accordion-item border-0">
+                        <!-- comment collapse -->
+                        <h2 class="accordion-header" id="headingTwo">
+                          <div
+                            class="
+                              accordion-button
+                              collapsed
+                              pointer
+                              d-flex
+                              justify-content-end
+                            "
+                            data-bs-toggle="collapse"
+                            data-bs-target="#collapsePost1"
+                            aria-expanded="false"
+                            aria-controls="collapsePost1"
+                          >
+                            <p class="m-0"> {{post.sum_likes}} likes</p>
+                          </div>
+                        </h2>
+                        <hr />
+                        <!-- comment & like bar -->
+                        <div class="d-flex justify-content-around">
+                          <a href="/likes?postid={{post.id}}" class="flex items-center space-x-2 d-flex justify-content-around text-decoration-none">
+                          <div
+                            class="
+                              dropdown-item
+                              rounded
+                              d-flex
+                              justify-content-center
+                              align-items-center
+                              pointer
+                              text-muted
+                              p-1
+                            "
+                          >
+                            <i class="bi bi-chat-heart h3 text-success me-3" aria-hidden="true" href='/likes?postid={{post.id}}"' ></i>
+                            
+                          {% comment %} </a> {% endcomment %}
+                          <p class="m-0 text-decoration-none">Like post</p>
+                        </a>
+                          </div>
+                          <div
+                            class="
+                              dropdown-item
+                              rounded
+                              d-flex
+                              justify-content-center
+                              align-items-center
+                              pointer
+                              text-muted
+                              p-1
+                            "
+                            data-bs-toggle="collapse"
+                            data-bs-target="#collapsePost1"
+                            aria-expanded="false"
+                            aria-controls="collapsePost1"
+                          >
+                            <i class="fas fa-comment-alt text-success me-3"></i>
+                            <p class="m-0">Comments</p>
+                          </div>
+                        </div>
+                        <!-- comment expand -->
+                        <div
+                          id="collapsePost1"
+                          class="accordion-collapse collapse"
+                          aria-labelledby="headingTwo"
+                          data-bs-parent="#accordionExample"
+                        >
+                          <hr />
+                          <div class="accordion-body">
+                            <!-- list of comments-->
+                            {% for comnt in post_data.comments%}
+                            <div class="d-flex align-items-center">
+                              <!-- comment text -->
+                              <div class="p-0 rounded w-100">                              
+                                <p> <a href='{% url 'profile' comnt.comment_owner.id comnt.comment_owner %}' class="fw-bold text-decoration-none " style="color:  #507E9F;">@{{comnt.comment_owner}} :</a>
+                                <span class="fs-6 bg-gray rounded"> {{comnt.comment}} </span>
+                                </p>
+                                <hr />
+                              </div>
+                            </div>
+                            {% endfor%}
+                            <!-- Add comment to post. -->
+                              <div class="d-flex my-1">
+                                <!-- logged in profile image. -->
+                                <img
+                                src="{{profile.profile_photo.url}}"
+                                  alt="avatar"
+                                  class="rounded-circle me-2"
+                                  style="
+                                    width: 40px;
+                                    height: 40px;
+                                    object-fit: cover;
+                                  "
+                                />
+                              <form action="{% url 'comment_post' user.username post.id %}" method="POST">
+                                  {%csrf_token%}
+                                <input
+                                  type="text"
+                                  name = "comment"
+                                  class="form-control border-0 rounded-pill bg-gray"
+                                  style="width:530px;"
+                                  placeholder="Add a comment..."
+                                />
+                              </form>
+                            </div>
+                            <!-- end -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end -->
+                  </div>
+                </div>
+              </div>
+              {% endif%}
+              {%endfor%} 
+
+            </div>
+          </div>
+          <div class="col-12 col-lg-3">
+          </div>
+        </div>
+      </div>
+    </body>
+  </div>
+
+</body>
+{%endblock%}
+{% include './base/footer.html' %}

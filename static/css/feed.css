@@ -1,0 +1,6 @@
+/* Prevent text from wrapping */
+input[type="text"] {
+    text-overflow: clip;
+    white-space: nowrap; 
+    overflow: hidden;
+}
